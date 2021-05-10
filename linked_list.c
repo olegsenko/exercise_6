@@ -1,13 +1,7 @@
-// linked_list_process.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
-#include "pch.h"
-#include <iostream>
-
 #include <stdio.h>
 #include <stdlib.h>
 
-int num_of_nodes = 13;
+int num_of_nodes = 23;
 
 struct ListNode {
 	int value;
@@ -31,8 +25,8 @@ void init_linked_list(struct ListNode** list)
 	cur = *list;
 
 	for (int i = 1; i < num_of_nodes; i++) {
-		cur->next = create_node(rand());
-		//cur->next = create_node(i);
+		//cur->next = create_node(rand());
+		cur->next = create_node(i);
 		cur = cur->next;
 	}
 }
@@ -62,6 +56,52 @@ void free_linked_list(struct ListNode** list)
 }
 
 
+int is_prime(int value)
+{
+	if (value == 1 || value == 0) return 0;
+
+	for (int i = 2; i*i <= value; i++) {
+		if ((value % i) == 0) {
+			return 0;
+		}
+	}
+	return 1;
+}
+
+void swap(struct ListNode **first, struct ListNode **second)
+{
+	struct ListNode *tmp = *first;
+	*first = *second;
+	*second = tmp;
+}
+
+
+int swap_nodes(struct ListNode *cur, struct ListNode *primes_cur)
+{
+	
+	printf("cur is %d, primes_cur is %d \n", cur->value, primes_cur->value);
+	swap(&(cur->next), &(primes_cur->next));
+	swap(&(cur->next->next), &(primes_cur->next->next));
+
+	return 0;
+}
+
+
+void process(struct ListNode** list)
+{
+	struct ListNode* cur = *list;
+	struct ListNode* primes_cur = *list;
+
+	while (cur->next) {
+		if (is_prime(cur->next->value)) {
+			printf("processing %d \n ", cur->next->value);
+			swap_nodes(cur, primes_cur);
+			primes_cur = primes_cur->next;
+			print_linked_list(*list);
+		}
+		cur = cur->next;
+	}
+}
 
 int main()
 {
@@ -69,8 +109,10 @@ int main()
 	printf("Linked list initialisation\n");
 	init_linked_list(&list);
 	print_linked_list(list);
+	process(&list);
 
+	printf("Result is: \n");
+	print_linked_list(list);
 	free_linked_list(&list);
 	return 0;
 }
-
